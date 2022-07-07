@@ -1,7 +1,7 @@
 <template>
   <div class="embed-viewer-core">
     <!-- Viewer navbar (position fixed) -->
-    <div v-if="!error" style="z-index: 100">
+    <div v-if="!error && !$route.query.hidesidebar" style="z-index: 100">
       <div
         class="top-left bottom-left pa-4 d-flex justify-space-between"
         style="right: 0px; position: fixed; z-index: 1000; width: 100%"
@@ -42,6 +42,7 @@
         </portal>
       </div>
       <div
+        v-if="!$route.query.hidecontrols"
         :style="`width: 100%; bottom: 12px; left: 0px; position: ${
           $isMobile() ? 'fixed' : 'absolute'
         }; z-index: 20`"
@@ -74,15 +75,12 @@
       style="z-index: 10000"
     >
       <div class="px-1 pt-1 d-flex flex-column" style="height: 100%; width: 100%">
-        <!-- Drawer closer -->
         <v-btn icon small class="align-self-end mb-2" @click="drawer = false">
           <v-icon x-small>mdi-close</v-icon>
         </v-btn>
 
-        <!-- Views display -->
         <views-display v-if="views.length !== 0" :views="views" :sticky-top="false" />
 
-        <!-- Filters display -->
         <viewer-filters
           :props="objectProperties"
           style="width: 100%"
@@ -90,11 +88,11 @@
         />
       </div>
     </v-navigation-drawer>
-
     <!-- Actual viewer -->
     <div style="position: fixed" class="viewer-wrapper no-scrollbar fullscreen">
       <speckle-viewer @load-progress="captureProgress" @viewer-init="onViewerInit" />
     </div>
+    <comments-overlay />
   </div>
 </template>
 <script lang="ts">
@@ -104,6 +102,7 @@ import SpeckleViewer from '@/main/components/common/SpeckleViewer.vue'
 import ViewerControls from '@/main/components/viewer/ViewerControls.vue'
 import ViewsDisplay from '@/main/components/viewer/ViewsDisplay.vue'
 import ViewerFilters from '@/main/components/viewer/ViewerFilters.vue'
+import CommentsOverlay from '@/embed/EmbedComments.vue'
 
 /**
  * Core embed viewer functionality with all of the heavy JS dependencies has been extracted to this component,
@@ -121,7 +120,8 @@ export default Vue.extend({
     SpeckleViewer,
     ViewerControls,
     ViewsDisplay,
-    ViewerFilters
+    ViewerFilters,
+    CommentsOverlay
   },
   props: {
     objects: {

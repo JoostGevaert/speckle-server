@@ -168,6 +168,7 @@
             @click.stop="mobileExpanded = !mobileExpanded"
           >
             <v-btn
+              v-if="$loggedIn()"
               v-tooltip="'Add attachments'"
               :disabled="loadingReply"
               icon
@@ -308,6 +309,7 @@
                     <v-icon dark small>mdi-share-variant</v-icon>
                   </v-btn>
                   <v-btn
+                    v-if="$loggedIn()"
                     v-tooltip="'Add attachments'"
                     :disabled="loadingReply"
                     icon

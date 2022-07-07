@@ -23,6 +23,11 @@ export const getBranchObj = (id, branch) => speckleFetch(branchQuery, { id, bran
 
 export const getCommitObj = (id, commit) => speckleFetch(commitQuery, { id, commit })
 
+export const getComments = (streamId, resources) =>
+  speckleFetch(commentsQuery, { streamId, resources })
+
+export const getReplies = (streamId, id) => speckleFetch(threadQuery, { streamId, id })
+
 const serverInfoQuery = `
   query ServerInfo {
     serverInfo {
@@ -64,6 +69,72 @@ const commitQuery = `
     stream(id: $id) {
       commit(id: $commit) {
         referencedObject
+      }
+    }
+  }
+`
+
+const commentsQuery = `
+  query comments( $streamId: String!, $resources: [ResourceIdentifierInput]!) {
+    comments(streamId: $streamId, resources: $resources, limit: 1000) {
+      totalCount
+      cursor
+      items {
+        id
+        archived
+        authorId
+        text {
+          doc
+          attachments {
+            id
+            fileName
+            streamId
+            fileType
+            fileSize
+          }
+        }
+        data
+        screenshot
+        replies {
+          totalCount
+        }
+        resources {
+          resourceId
+          resourceType
+        }
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`
+
+const threadQuery = `
+  query threadQuery( $streamId: String!, $id: String!) {
+    comment(streamId: $streamId, id: $id) {
+      id 
+      viewedAt
+      replies(limit: 1000) {
+        totalCount
+        cursor
+        items{
+          id
+          archived
+          authorId
+          text {
+            doc
+            attachments {
+              id
+              fileName
+              streamId
+              fileType
+              fileSize
+            }
+          }
+          data
+          createdAt
+          updatedAt
+        }
       }
     }
   }

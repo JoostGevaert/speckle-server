@@ -13,6 +13,9 @@ import { formatNumber } from '@/plugins/formatNumber'
 // Accepts 'max' parameter to set it's formatting while being animated
 Vue.filter('prettynum', formatNumber)
 
+import VueTimeago from 'vue-timeago'
+Vue.use(VueTimeago, { locale: 'en' })
+
 Vue.component('HistogramSlider', async () => {
   await import(
     /* webpackChunkName: "vue-histogram-slider" */ 'vue-histogram-slider/dist/histogram-slider.css'

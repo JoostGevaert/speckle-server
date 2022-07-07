@@ -116,6 +116,10 @@ export default Vue.extend({
     window.addEventListener('resize', () => {
       this.height = window.innerHeight
     })
+
+    if (this.$route.query.autoload === 'true') {
+      setTimeout(() => this.load(), 500) // total hack
+    }
   },
   async beforeMount() {
     if (this.$route.query.stream) this.displayType = 'stream'
